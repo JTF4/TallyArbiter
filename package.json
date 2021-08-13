@@ -95,6 +95,10 @@
 					"to": "Resources/build/trayicon.png"
 				},
 				{
+					"from": "./build/background.png",
+					"to": "Resources/build/background.png"
+				},
+				{
 					"from": "./build/icon.png",
 					"to": "Resources/build/icon.png"
 				}
