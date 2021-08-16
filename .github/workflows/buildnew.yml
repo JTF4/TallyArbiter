@@ -101,7 +101,7 @@ jobs:
     - name: Build
       run: yarn dist
       env:
-        github_token: ${{ secrets.GH_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
         release: ${{ startsWith(github.ref, 'refs/tags/v') }}
         skip_build: true
 ##    - name: Get current version
