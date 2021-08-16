@@ -40,7 +40,13 @@
 		"bin",
 		"ui-dist",
 		"readme.md",
-		"LICENSE"
+		"LICENSE",
+		"**/*",
+		"build/icon.png",
+		"build/trayicon.png",
+		"!UI/**/*",
+		"!UI/*",
+		"!tools/*"
 	],
 	"contributors": [
 		"Andreas H. Thomsen <mc-hauge@hotmail.com>",
@@ -66,8 +72,7 @@
 		"socket.io-client": "4.1.2",
 		"tsl-umd": "^1.1.2",
 		"xml2js": "^0.4.23",
-		"cross-env": "^7.0.3",
-		"nodemon": "^2.0.12"
+		"cross-env": "^7.0.3"
 	},
 	"main": "main.js",
 	"build": {
@@ -117,16 +122,7 @@
 		},
 		"linux": {
 			"target": "dir"
-		},
-		"files": [
-			"**/*",
-			"build/icon.png",
-			"build/trayicon.png",
-			"!UI/**/*",
-			"!UI/*",
-			"!tools/*",
-			"!*.md"
-		]
+		}
 	},
 	"scripts": {
 		"start": "node index.js",
