@@ -40,7 +40,13 @@
 		"bin",
 		"ui-dist",
 		"readme.md",
-		"LICENSE"
+		"LICENSE",
+		"**/*",
+		"build/icon.png",
+		"build/trayicon.png",
+		"!UI/**/*",
+		"!UI/*",
+		"!tools/*"
 	],
 	"contributors": [
 		"Andreas H. Thomsen <mc-hauge@hotmail.com>",
@@ -57,24 +63,95 @@
 		"find-remove": "^3.1.0",
 		"jquery": "^3.6.0",
 		"jspack": "^0.0.4",
-		"obs-websocket-js": "^4.0.2",
-		"osc": "^2.4.1",
+		"nodemon": "^2.0.12",
+		"obs-websocket-js": "^4.0.3",
+		"osc": "^2.4.2",
 		"packet": "0.0.6",
 		"rate-limiter-flexible": "^2.2.4",
 		"socket.io": "4.1.2",
 		"socket.io-client": "4.1.2",
 		"tsl-umd": "^1.1.2",
-		"xml2js": "^0.4.23"
+		"xml2js": "^0.4.23",
+		"cross-env": "^7.0.3"
 	},
 	"main": "main.js",
+	"build": {
+		"productName": "TallyArbiter",
+		"appId": "tallyarbiter.josephadams.no",
+		"remoteBuild": false,
+		"dmg": {
+			"artifactName": "tallyarbiter-mac-${arch}.dmg",
+			"sign": true
+		},
+		"mac": {
+			"target": "dmg",
+			"category": "public.app-category.productivity",
+			"icon": "icon.png",
+			"extraFiles": [
+				{
+					"from": "./build/trayicon.png",
+					"to": "Resources/build/trayicon.png"
+				},
+				{
+					"from": "./build/background.png",
+					"to": "Resources/build/background.png"
+				},
+				{
+					"from": "./build/icon.png",
+					"to": "Resources/build/icon.png"
+				}
+			]
+		},
+		"win": {
+			"target": "nsis"
+		},
+		"nsis": {
+			"artifactName": "tallyarbiter-win64.exe",
+			"createStartMenuShortcut": true,
+			"perMachine": true,
+			"oneClick": false,
+			"allowElevation": true,
+			"allowToChangeInstallationDirectory": true,
+			"installerIcon": "icon.ico",
+			"installerSidebar": "tainst.bmp",
+			"uninstallerSidebar": "tainst.bmp"
+		},
+		"directories": {
+			"buildResources": "build/",
+			"output": "electron-output/"
+		},
+		"linux": {
+			"target": "dir"
+		}
+	},
 	"scripts": {
 		"start": "node index.js",
 		"prepare": "cd UI && npm i && npm run build",
 		"desktop": "electron .",
-		"build-desktop": "electron-builder"
+		"build-desktop": "electron-builder",
+		"dev": "cross-env DEVELOPER=1 electron .",
+		"update": "./tools/update.sh",
+		"update-main": "./tools/update-main.sh",
+		"pack": "electron-builder --dir",
+		"dist:ui": "cd UI && yarn build",
+		"dist:prepare": "rm -rf electron-output && yarn dist:ui",
+		"dist": "yarn dist:prepare && yarn electron-rebuild && electron-builder",
+		"electron-rebuild": "electron-builder install-app-deps",
+		"macdist": "yarn dist:prepare && yarn dist:prepare:mac-x64 && electron-builder --publish=never  --x64 --mac",
+		"macarmdist": "yarn dist:prepare && yarn dist:prepare:mac-arm64 && electron-builder --publish=never  --arm64 --mac",
+		"windist": "yarn dist:prepare && yarn dist:prepare:win && electron-builder --publish=never  --x64 --win",
+		"lindist": "yarn dist:prepare && yarn dist:prepare:linux && electron-builder --publish=never  --x64 --linux",
+		"rpidist": "yarn dist:prepare && yarn dist:prepare:rpi && electron-builder --publish=never  --armv7l --linux",
+		"dist:prepare:win": "cross-env npm_config_platform=win32 npm_config_arch=x64",
+		"dist:prepare:mac-x64": "cross-env npm_config_platform=darwin npm_config_arch=x64",
+		"dist:prepare:mac-arm64": "cross-env npm_config_platform=darwin npm_config_arch=arm64",
+		"dist:prepare:linux": "cross-env npm_config_platform=linux npm_config_arch=x64",
+		"dist:prepare:rpi": "cross-env npm_config_platform=linux npm_config_arch=arm",
+		"index": "nodemon --ignore './UI/' index.js",
+		"ui": "cd UI && yarn start"
 	},
 	"devDependencies": {
-		"electron": "^12.0.9",
-		"electron-builder": "^22.10.5"
+		"electron": "^12.0.16",
+		"electron-builder": "^22.11.7"
 	}
 }
